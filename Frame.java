@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -101,6 +102,7 @@ public class Frame extends JFrame implements ActionListener {
         timer.stop();
         timerLabel.setText("");
         duration = Duration.ZERO;
+//        duration.get(ChronoUnit.MILLIS);
         currentIndex = 0;
         for (JLabel al : alphaLabels) {
             al.setForeground(Color.BLACK);
