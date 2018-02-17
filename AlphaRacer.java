@@ -21,10 +21,7 @@ public class AlphaRacer {
         @Override
         public void keyPressed(KeyEvent e) {
             String temp = ("" + e.getKeyChar()).toUpperCase();
-            if(frame.inputLetter(temp))
-                System.out.println("OK");
-            else
-                System.out.println("FALSE");
+            frame.inputLetter(temp);
         }
     };
     

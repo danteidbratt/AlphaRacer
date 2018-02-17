@@ -4,12 +4,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
+import java.time.Duration;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.Timer;
 
-public class Frame extends JFrame implements ActionListener{
+public class Frame extends JFrame implements ActionListener {
 
     List<JPanel> spaces;
     JPanel mainPanel;
@@ -19,11 +20,10 @@ public class Frame extends JFrame implements ActionListener{
     List<String> letters;
     List<JLabel> alphaLabels;
     Timer timer;
-    int timeUnits;
+    Duration duration;
     int currentIndex;
 
-    public Frame(){
-        timeUnits = 0;
+    public Frame() {
         mainPanel = new JPanel();
         infoPanel = new JLabel();
         timerLabel = new JLabel();
@@ -33,18 +33,19 @@ public class Frame extends JFrame implements ActionListener{
         alphaLabels = new ArrayList<>();
         letters = new ArrayList<>();
         currentIndex = 0;
-        
+        duration = Duration.ofSeconds(0);
+
         for (int i = 0; i < 4; i++) {
             spaces.add(new JPanel());
         }
-        
+
         for (int i = 0; i < 26; i++) {
-            letters.add(String.valueOf((char)(65+i)));
+            letters.add(String.valueOf((char) (65 + i)));
             alphaLabels.add(new JLabel(letters.get(i)));
         }
     }
-    
-    public void setupFrame(){
+
+    public void setupFrame() {
         setLayout(new BorderLayout());
         setVisible(true);
         for (JPanel space : spaces) {
@@ -71,35 +72,48 @@ public class Frame extends JFrame implements ActionListener{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         centerPanel.requestFocus();
     }
-    
-    public void setKeyListener(KeyListener kl){
+
+    public void setKeyListener(KeyListener kl) {
         centerPanel.addKeyListener(kl);
     }
-    
-    public boolean inputLetter(String input){
-        if(input.equals(letters.get(currentIndex))){
-            if(currentIndex == 0) {
-                timer.start();
-            }
-            alphaLabels.get(currentIndex).setForeground(Color.GREEN);
-            currentIndex++;
-            return true;
+
+    public void inputLetter(String input) {
+        if (input.equals(letters.get(currentIndex))) {
+            correctInput();
         }
-        alphaLabels.get(currentIndex).setForeground(Color.RED);
+        else {
+            falseInput();
+        }
+    }
+
+    private void correctInput() {
+        if (currentIndex == 0) {
+            timer.start();
+        }
+        alphaLabels.get(currentIndex).setForeground(Color.GREEN);
+        currentIndex++;
+        if (currentIndex == 26){
+            System.out.println("WIN");
+        }
+    }
+
+    private void falseInput() {
+        timer.stop();
+        timerLabel.setText("");
+        duration = Duration.ZERO;
         currentIndex = 0;
         for (JLabel al : alphaLabels) {
             al.setForeground(Color.BLACK);
         }
-        return false;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == timer) {
-            String temp = String.valueOf(timeUnits);
-            temp = temp.substring(0, temp.length()-1) + "." + temp.substring(temp.length()-1);
+        if (e.getSource() == timer) {
+            duration = duration.plusMillis(100);
+            String temp = duration.toString();
+            temp = temp.substring(2, temp.length() - 1);
             timerLabel.setText(temp);
-            timeUnits++;
         }
     }
 }
