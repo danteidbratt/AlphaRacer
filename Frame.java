@@ -27,6 +27,7 @@ public class Frame extends JFrame implements ActionListener {
     List<JLabel> alphaLabels;
     Timer timer;
     Duration duration;
+    List<Highscore> top5;
     int currentIndex;
 
     public Frame() {
@@ -57,6 +58,7 @@ public class Frame extends JFrame implements ActionListener {
     }
     
     public void setupFrame() {
+        setTitle("- AlphaRacer -");
         setLayout(new BorderLayout());
         setVisible(true);
         for (JPanel space : spaces) {
@@ -72,6 +74,7 @@ public class Frame extends JFrame implements ActionListener {
         mainPanel.setLayout(new GridLayout(3, 1));
         centerPanel.setLayout(new GridLayout(1, 26));
         for (JLabel letter : alphaLabels) {
+            letter.setFont(new Font("SansSerif", 1, 14));
             centerPanel.add(letter);
         }
         timerLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -102,7 +105,7 @@ public class Frame extends JFrame implements ActionListener {
             correctInput();
         }
         else {
-            falseInput();
+            resetGame();
         }
     }
 
@@ -112,13 +115,9 @@ public class Frame extends JFrame implements ActionListener {
         }
         alphaLabels.get(currentIndex).setForeground(Color.GREEN);
         currentIndex++;
-        if (currentIndex == 26){
-            timer.stop();
-            finish();
-        }
     }
 
-    private void falseInput() {
+    public void resetGame() {
         timer.stop();
         timerLabel.setText("");
         duration = Duration.ZERO;
@@ -126,6 +125,9 @@ public class Frame extends JFrame implements ActionListener {
         for (JLabel al : alphaLabels) {
             al.setForeground(Color.BLACK);
         }
+        centerPanel.requestFocus();
+        repaint();
+        revalidate();
     }
 
     @Override
@@ -139,6 +141,7 @@ public class Frame extends JFrame implements ActionListener {
     }
     
     public void setHighscores(List<Highscore> top5){
+        this.top5 = top5;
         highscorePanel.removeAll();
         for (int i = 0; i < 5; i++) {
             highscorePanel.add(new JLabel("  " + (i+1) + ":"));
@@ -149,9 +152,4 @@ public class Frame extends JFrame implements ActionListener {
         revalidate();
     }
     
-    public void finish(){
-        if(duration.toMillis() < fifth * 1000) {
-            JOptionPane.showMessageDialog(null, "New Highscore");
-        }
-    }
 }
