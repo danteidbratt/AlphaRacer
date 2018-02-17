@@ -12,6 +12,7 @@ import javax.swing.Timer;
 
 public class Frame extends JFrame implements ActionListener {
 
+    double fifth;
     List<JPanel> spaces;
     JPanel superPanel;
     JPanel eastPanel;
@@ -144,10 +145,13 @@ public class Frame extends JFrame implements ActionListener {
             highscorePanel.add(new JLabel(String.valueOf(top5.get(i).getScore())));
             highscorePanel.add(new JLabel(top5.get(i).getInitials()));
         }
+        fifth = top5.get(4).getScore();
         revalidate();
     }
     
     public void finish(){
-        
+        if(duration.toMillis() < fifth * 1000) {
+            JOptionPane.showMessageDialog(null, "New Highscore");
+        }
     }
 }
