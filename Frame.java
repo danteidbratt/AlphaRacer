@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -14,9 +13,14 @@ import javax.swing.Timer;
 public class Frame extends JFrame implements ActionListener {
 
     List<JPanel> spaces;
+    JPanel superPanel;
+    JPanel eastPanel;
+    JLabel highscoreTextLabel;
     JPanel mainPanel;
     JLabel infoPanel;
     JPanel centerPanel;
+    JPanel highscorePanel;
+    List<JLabel> highscoreLabels;
     JLabel timerLabel;
     List<String> letters;
     List<JLabel> alphaLabels;
@@ -25,10 +29,15 @@ public class Frame extends JFrame implements ActionListener {
     int currentIndex;
 
     public Frame() {
+        superPanel = new JPanel();
+        eastPanel = new JPanel();
+        highscoreTextLabel = new JLabel("- Highscores -");
+        highscoreLabels = new ArrayList<>();
         mainPanel = new JPanel();
         infoPanel = new JLabel();
         timerLabel = new JLabel();
         centerPanel = new JPanel();
+        highscorePanel = new JPanel();
         timer = new Timer(100, this);
         spaces = new ArrayList<>();
         alphaLabels = new ArrayList<>();
@@ -45,7 +54,7 @@ public class Frame extends JFrame implements ActionListener {
             alphaLabels.add(new JLabel(letters.get(i)));
         }
     }
-
+    
     public void setupFrame() {
         setLayout(new BorderLayout());
         setVisible(true);
@@ -53,6 +62,12 @@ public class Frame extends JFrame implements ActionListener {
             space.setPreferredSize(new Dimension(30, 30));
             space.setBackground(Color.LIGHT_GRAY);
         }
+        superPanel.setLayout(new BorderLayout());
+        eastPanel.setLayout(new BorderLayout());
+        eastPanel.setPreferredSize(new Dimension(140, 0));
+        highscoreTextLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        eastPanel.add(highscoreTextLabel, BorderLayout.NORTH);
+        eastPanel.add(highscorePanel, BorderLayout.CENTER);
         mainPanel.setLayout(new GridLayout(3, 1));
         centerPanel.setLayout(new GridLayout(1, 26));
         for (JLabel letter : alphaLabels) {
@@ -62,12 +77,15 @@ public class Frame extends JFrame implements ActionListener {
         mainPanel.add(infoPanel);
         mainPanel.add(centerPanel);
         mainPanel.add(timerLabel);
-        add(spaces.get(0), BorderLayout.NORTH);
-        add(spaces.get(1), BorderLayout.WEST);
-        add(spaces.get(2), BorderLayout.EAST);
-        add(spaces.get(3), BorderLayout.SOUTH);
-        add(mainPanel, BorderLayout.CENTER);
-        setPreferredSize(new Dimension(600, 200));
+        highscorePanel.setLayout(new GridLayout(5, 3, 5, 5));
+        superPanel.add(spaces.get(0), BorderLayout.NORTH);
+        superPanel.add(spaces.get(1), BorderLayout.WEST);
+        superPanel.add(spaces.get(2), BorderLayout.EAST);
+        superPanel.add(spaces.get(3), BorderLayout.SOUTH);
+        superPanel.add(mainPanel, BorderLayout.CENTER);
+        add(superPanel, BorderLayout.CENTER);
+        add(eastPanel, BorderLayout.EAST);
+        setPreferredSize(new Dimension(700, 200));
         pack();
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -94,7 +112,8 @@ public class Frame extends JFrame implements ActionListener {
         alphaLabels.get(currentIndex).setForeground(Color.GREEN);
         currentIndex++;
         if (currentIndex == 26){
-            System.out.println("WIN");
+            timer.stop();
+            finish();
         }
     }
 
@@ -102,7 +121,6 @@ public class Frame extends JFrame implements ActionListener {
         timer.stop();
         timerLabel.setText("");
         duration = Duration.ZERO;
-//        duration.get(ChronoUnit.MILLIS);
         currentIndex = 0;
         for (JLabel al : alphaLabels) {
             al.setForeground(Color.BLACK);
@@ -117,5 +135,19 @@ public class Frame extends JFrame implements ActionListener {
             temp = temp.substring(2, temp.length() - 1);
             timerLabel.setText(temp);
         }
+    }
+    
+    public void setHighscores(List<Highscore> top5){
+        highscorePanel.removeAll();
+        for (int i = 0; i < 5; i++) {
+            highscorePanel.add(new JLabel("  " + (i+1) + ":"));
+            highscorePanel.add(new JLabel(String.valueOf(top5.get(i).getScore())));
+            highscorePanel.add(new JLabel(top5.get(i).getInitials()));
+        }
+        revalidate();
+    }
+    
+    public void finish(){
+        
     }
 }

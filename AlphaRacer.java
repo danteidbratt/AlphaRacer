@@ -6,14 +6,16 @@ import java.awt.event.KeyEvent;
 public class AlphaRacer {
 
     Frame frame;
-    
+    Repository repository;
     
     public AlphaRacer() {
         frame = new Frame();
+        repository = new Repository();
     }
     
     private void start(){
         frame.setupFrame();
+        frame.setHighscores(repository.getTop5());
         frame.setKeyListener(ka);
     }
     
