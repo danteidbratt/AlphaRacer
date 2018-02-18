@@ -61,7 +61,7 @@ public class Frame extends JFrame implements ActionListener {
         timerLabel = new JLabel("0.0");
         centerPanel = new JPanel();
         highscorePanel = new JPanel();
-        timer = new Timer(100, this);
+        timer = new Timer(10, this);
         spaces = new ArrayList<>();
         alphaLabels = new ArrayList<>();
         letters = new ArrayList<>();
@@ -166,8 +166,8 @@ public class Frame extends JFrame implements ActionListener {
         
         eastInfoPanel.setBackground(backgroundColor);
         eastInfoPanel.setLayout(new GridLayout(1, 2, 0, 10));
-        eastInfoPanel.setBorder(BorderFactory.createEmptyBorder(5, 25, 0, 25));
-        eastInfoPanel.setPreferredSize(new Dimension(0, 30));
+        eastInfoPanel.setBorder(BorderFactory.createEmptyBorder(8, 25, 5, 25));
+        eastInfoPanel.setPreferredSize(new Dimension(0, 40));
         usernameLabel.setFont(new Font("SansSerif", 1, 12));
         usernameLabel.setHorizontalAlignment(SwingConstants.CENTER);
         eastInfoPanel.add(changeUserButton);
@@ -176,6 +176,7 @@ public class Frame extends JFrame implements ActionListener {
         eastPanel.add(eastInfoPanel, BorderLayout.NORTH);
         eastPanel.add(spaces.get(11), BorderLayout.WEST);
         eastPanel.add(spaces.get(5), BorderLayout.EAST);
+        spaces.get(6).setPreferredSize(new Dimension(0, 20));
         eastPanel.add(spaces.get(6), BorderLayout.SOUTH);
         
                 
@@ -196,6 +197,7 @@ public class Frame extends JFrame implements ActionListener {
     public void setActionListeners(ActionListener al) {
         exitButton.addActionListener(al);
         statsButton.addActionListener(al);
+        changeUserButton.addActionListener(al);
     }
 
     public void inputLetter(String input) {
@@ -230,7 +232,7 @@ public class Frame extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == timer) {
-            duration = duration.plusMillis(100);
+            duration = duration.plusMillis(10);
             String temp = duration.toString();
             temp = temp.substring(2, temp.length() - 1);
             timerLabel.setText(temp);
@@ -260,7 +262,6 @@ public class Frame extends JFrame implements ActionListener {
         String input = "";
         while(true){
             input = JOptionPane.showInputDialog("Enter initials");
-            System.out.println(input);
             if (input == null) {
                 System.exit(0);
             }
@@ -274,6 +275,7 @@ public class Frame extends JFrame implements ActionListener {
         input = input.toUpperCase();
         usernameLabel.setText("Player: " + input);
         revalidate();
+        centerPanel.requestFocus();
         return input;
     }
     
