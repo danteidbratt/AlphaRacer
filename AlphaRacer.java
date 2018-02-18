@@ -59,7 +59,6 @@ public class AlphaRacer implements ActionListener{
             frame.showStats(repository.getStats());
         }
         else if (e.getSource() == frame.changeUserButton) {
-            System.out.println("eyy");
             playerInitials = frame.changeUser();
         }
     }
