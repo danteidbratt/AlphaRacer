@@ -58,7 +58,7 @@ public class Frame extends JFrame implements ActionListener {
         highscoreTextLabel = new JLabel("- Highscores -");
         highscoreLabels = new ArrayList<>();
         mainPanel = new JPanel();
-        timerLabel = new JLabel("0.0");
+        timerLabel = new JLabel("0.00");
         centerPanel = new JPanel();
         highscorePanel = new JPanel();
         timer = new Timer(10, this);
@@ -148,7 +148,7 @@ public class Frame extends JFrame implements ActionListener {
         timerLabel.setBackground(Color.WHITE);
         timerLabel.setOpaque(true);
         timerLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-        timerLabel.setFont(new Font("SansSerif", 1, 20));
+        timerLabel.setFont(new Font("Courier", 1, 20));
         infoPanel.add(spaces.get(7));
         infoPanel.add(exitButton);
         infoPanel.add(timerLabel);
@@ -218,7 +218,7 @@ public class Frame extends JFrame implements ActionListener {
 
     public void resetGame() {
         timer.stop();
-        timerLabel.setText("0.0");
+        timerLabel.setText("0.00");
         duration = Duration.ZERO;
         currentIndex = 0;
         for (JLabel al : alphaLabels) {
@@ -233,9 +233,7 @@ public class Frame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == timer) {
             duration = duration.plusMillis(10);
-            String temp = duration.toString();
-            temp = temp.substring(2, temp.length() - 1);
-            timerLabel.setText(temp);
+            timerLabel.setText(String.format("%.2f", (duration.toMillis()*1.0)/1000));
         }
     }
 
