@@ -3,7 +3,6 @@ package alpharacer;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.*;
 
 public class Repository {
 
@@ -36,34 +35,30 @@ public class Repository {
         return top5;
     }
 
-    public int registerScore(long duration) {
-        int rowsAffected = -1;
-        int place = 0;
-        String initials = "AAA";
+    public String registerScore(long duration, String initials) {
+        String verdict = "";
         List<Highscore> top5;
         String query = "insert into score (seconds, initials) values (?, ?)";
         try (Connection con = DriverManager.getConnection(log.getCode(), log.getName(), log.getPass());
                 PreparedStatement stmt = con.prepareStatement(query);) {
             top5 = getTop5();
+            int place = 0;
             for (int i = 0; i < top5.size(); i++) {
                 if (duration < top5.get(i).getScore() * 1000) {
                     place = i + 1;
                     break;
                 }
             }
-            if (place > 0) {
-                initials = JOptionPane.showInputDialog("New HighScore!\nEnter Initials").trim().toUpperCase();
-            }
-            if(initials.length() > 3) {
-                initials = initials.substring(0, 3);
+            if(place > 0) {
+                verdict = "\nNew Highscore!";
             }
             stmt.setDouble(1, (duration * 1.0) / 1000);
             stmt.setString(2, initials);
-            rowsAffected = stmt.executeUpdate();
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return rowsAffected;
+        return verdict;
     }
 
     public List<String> getStats() {

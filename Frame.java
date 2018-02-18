@@ -1,9 +1,7 @@
 package alpharacer;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.time.Duration;
 import java.util.*;
 import java.util.List;
@@ -11,11 +9,15 @@ import javax.swing.*;
 import javax.swing.Timer;
 
 public class Frame extends JFrame implements ActionListener {
-
+    
+    JPanel logoPanel;
+    JLabel flameRight;
+    JLabel flameLeft;
     JLabel logo;
     List<JLabel> spaces;
     JPanel superPanel;
     JPanel eastPanel;
+    JPanel eastInfoPanel;
     JPanel southPanel;
     JLabel highscoreTextLabel;
     JPanel mainPanel;
@@ -32,15 +34,23 @@ public class Frame extends JFrame implements ActionListener {
     JLabel[][] highscores = new JLabel[5][3];
     JButton exitButton;
     JButton statsButton;
+    JButton changeUserButton;
+    JLabel usernameLabel;
     int currentIndex;
     
     Color backgroundColor;
 
     public Frame() {
+        logoPanel = new JPanel();
+        flameRight = new JLabel();
+        flameLeft = new JLabel();
+        usernameLabel = new JLabel();
+        eastInfoPanel = new JPanel();
         backgroundColor = new Color(200, 20, 20);
         exitButton = new JButton("Exit");
         statsButton = new JButton("Stats");
-        logo = new JLabel("- AlphaRacer -");
+        changeUserButton = new JButton("Change");
+        logo = new JLabel("AlphaRacer");
         infoPanel = new JPanel();
         superPanel = new JPanel();
         eastPanel = new JPanel();
@@ -91,7 +101,7 @@ public class Frame extends JFrame implements ActionListener {
         }
         superPanel.setLayout(new BorderLayout());
         eastPanel.setLayout(new BorderLayout());
-        eastPanel.setPreferredSize(new Dimension(180, 0));
+        eastPanel.setPreferredSize(new Dimension(210, 0));
         eastPanel.setBackground(Color.BLACK);
         highscoreTextLabel.setHorizontalAlignment(SwingConstants.CENTER);
         highscoreTextLabel.setOpaque(true);
@@ -109,12 +119,25 @@ public class Frame extends JFrame implements ActionListener {
         highscorePanel.add(highscoreTextLabel, 0);
         highscorePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
 
-        logo.setText("------ AlphaRacer ------");
+        logoPanel.setLayout(new BorderLayout());
+        logoPanel.setBackground(backgroundColor);
+        logoPanel.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
         logo.setBackground(backgroundColor);
         logo.setOpaque(true);
         logo.setFont(new Font("SansSerif", 3, 40));
         logo.setHorizontalAlignment(SwingConstants.CENTER);
-        logo.setPreferredSize(new Dimension(30, 100));
+        flameRight.setIcon(new ImageIcon(new ImageIcon("pics/FlamesRight.jpg").getImage().getScaledInstance(160, 50, Image.SCALE_SMOOTH)));
+        flameLeft.setIcon(new ImageIcon(new ImageIcon("pics/FlamesLeft.jpg").getImage().getScaledInstance(160, 50, Image.SCALE_SMOOTH)));
+        flameRight.setBackground(backgroundColor);
+        flameLeft.setBackground(backgroundColor);
+        flameRight.setHorizontalAlignment(SwingConstants.LEFT);
+        flameLeft.setHorizontalAlignment(SwingConstants.RIGHT);
+        flameRight.setOpaque(true);
+        flameLeft.setOpaque(true);
+        logoPanel.setPreferredSize(new Dimension(30, 120));
+        logoPanel.add(flameLeft, BorderLayout.WEST);
+        logoPanel.add(logo, BorderLayout.CENTER);
+        logoPanel.add(flameRight, BorderLayout.EAST);
 
         southPanel.setLayout(new BorderLayout());
         infoPanel.setLayout(new GridLayout(1, 5, 50, 50));
@@ -136,12 +159,22 @@ public class Frame extends JFrame implements ActionListener {
         southPanel.add(infoPanel, BorderLayout.CENTER);
         southPanel.add(spaces.get(10), BorderLayout.SOUTH);
         
-        superPanel.add(logo, BorderLayout.NORTH);
+        superPanel.add(logoPanel, BorderLayout.NORTH);
         superPanel.add(spaces.get(1), BorderLayout.WEST);
-        superPanel.add(spaces.get(2), BorderLayout.EAST);
         superPanel.add(southPanel, BorderLayout.SOUTH);
         superPanel.add(mainPanel, BorderLayout.CENTER);
-        eastPanel.add(spaces.get(4), BorderLayout.NORTH);
+        
+        eastInfoPanel.setBackground(backgroundColor);
+        eastInfoPanel.setLayout(new GridLayout(1, 2, 0, 10));
+        eastInfoPanel.setBorder(BorderFactory.createEmptyBorder(5, 25, 0, 25));
+        eastInfoPanel.setPreferredSize(new Dimension(0, 30));
+        usernameLabel.setFont(new Font("SansSerif", 1, 12));
+        usernameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        eastInfoPanel.add(changeUserButton);
+        eastInfoPanel.add(usernameLabel);
+        
+        eastPanel.add(eastInfoPanel, BorderLayout.NORTH);
+        eastPanel.add(spaces.get(11), BorderLayout.WEST);
         eastPanel.add(spaces.get(5), BorderLayout.EAST);
         eastPanel.add(spaces.get(6), BorderLayout.SOUTH);
         
@@ -217,5 +250,36 @@ public class Frame extends JFrame implements ActionListener {
         }
         revalidate();
     }
-
+    
+    public void showStats(List<String> stats){
+        JOptionPane.showMessageDialog(null, stats.get(0) + stats.get(1) + stats.get(2));
+        centerPanel.requestFocus();
+    }
+    
+    public String changeUser(){
+        String input = "";
+        while(true){
+            input = JOptionPane.showInputDialog("Enter initials");
+            System.out.println(input);
+            if (input == null) {
+                System.exit(0);
+            }
+            else if(input.length() == 3){
+                break;
+            }
+            else {
+                JOptionPane.showMessageDialog(null, "Initials must be 3 letters");
+            }
+        }
+        input = input.toUpperCase();
+        usernameLabel.setText("Player: " + input);
+        revalidate();
+        return input;
+    }
+    
+    public void showVerdict(String verdict){
+        String temp = duration.toString();
+        temp = temp.substring(2, temp.length() - 1);
+        JOptionPane.showMessageDialog(null, temp + verdict);
+    }
 }

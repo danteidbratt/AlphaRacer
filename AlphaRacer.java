@@ -4,13 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.List;
-import javax.swing.*;
 
 public class AlphaRacer implements ActionListener{
 
     Frame frame;
     Repository repository;
+    String playerInitials;
+    long score;
+    
 
     public AlphaRacer() {
         frame = new Frame();
@@ -22,6 +23,7 @@ public class AlphaRacer implements ActionListener{
         frame.setHighscores(repository.getTop5());
         frame.setKeyListener(ka);
         frame.setActionListeners(this);
+        playerInitials = frame.changeUser();
     }
     
     KeyAdapter ka = new KeyAdapter() {
@@ -31,7 +33,8 @@ public class AlphaRacer implements ActionListener{
             frame.inputLetter(temp);
             if (frame.currentIndex == 26) {
                 frame.timer.stop();
-                System.out.println(repository.registerScore(frame.duration.toMillis()));
+                score = frame.duration.toMillis();
+                frame.showVerdict(repository.registerScore(score, playerInitials));
                 newGame();
             }
         }
@@ -41,7 +44,7 @@ public class AlphaRacer implements ActionListener{
         frame.setHighscores(repository.getTop5());
         frame.resetGame();
     }
-
+    
     public static void main(String[] args) {
         AlphaRacer alphaRacer = new AlphaRacer();
         alphaRacer.start();
@@ -53,10 +56,11 @@ public class AlphaRacer implements ActionListener{
             System.exit(0);
         }
         else if (e.getSource() == frame.statsButton) {
-            List<String> stats = repository.getStats();
-            JOptionPane.showMessageDialog(null, stats.get(0) + stats.get(1) + stats.get(2));
-            frame.centerPanel.requestFocus();
+            frame.showStats(repository.getStats());
+        }
+        else if (e.getSource() == frame.changeUserButton) {
+            playerInitials = frame.changeUser();
         }
     }
-
+    
 }
