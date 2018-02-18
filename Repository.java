@@ -54,8 +54,11 @@ public class Repository {
             if (place > 0) {
                 initials = JOptionPane.showInputDialog("New HighScore!\nEnter Initials").trim().toUpperCase();
             }
+            if(initials.length() > 3) {
+                initials = initials.substring(0, 3);
+            }
             stmt.setDouble(1, (duration * 1.0) / 1000);
-            stmt.setString(2, initials.substring(0, 3));
+            stmt.setString(2, initials);
             rowsAffected = stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
