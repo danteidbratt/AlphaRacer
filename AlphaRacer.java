@@ -23,7 +23,7 @@ public class AlphaRacer implements ActionListener{
         frame.setHighscores(repository.getTop5());
         frame.setKeyListener(ka);
         frame.setActionListeners(this);
-        playerInitials = frame.changeUser();
+        playerInitials = frame.setUser();
     }
     
     KeyAdapter ka = new KeyAdapter() {

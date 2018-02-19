@@ -9,7 +9,7 @@ import javax.swing.*;
 import javax.swing.Timer;
 
 public class Frame extends JFrame implements ActionListener {
-    
+
     JPanel logoPanel;
     JLabel flameRight;
     JLabel flameLeft;
@@ -37,7 +37,7 @@ public class Frame extends JFrame implements ActionListener {
     JButton changeUserButton;
     JLabel usernameLabel;
     int currentIndex;
-    
+
     Color backgroundColor;
 
     public Frame() {
@@ -88,6 +88,9 @@ public class Frame extends JFrame implements ActionListener {
             letters.add(String.valueOf((char) (65 + i)));
             alphaLabels.add(new JLabel(letters.get(i)));
         }
+        for (JLabel a : alphaLabels) {
+            a.setHorizontalAlignment(0);
+        }
     }
 
     public void setupFrame() {
@@ -121,10 +124,10 @@ public class Frame extends JFrame implements ActionListener {
 
         logoPanel.setLayout(new BorderLayout());
         logoPanel.setBackground(backgroundColor);
-        logoPanel.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
+        logoPanel.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 15));
         logo.setBackground(backgroundColor);
         logo.setOpaque(true);
-        logo.setFont(new Font("SansSerif", 3, 40));
+        logo.setFont(new Font("Skia", 0, 40));
         logo.setHorizontalAlignment(SwingConstants.CENTER);
         flameRight.setIcon(new ImageIcon(new ImageIcon("pics/FlamesRight.jpg").getImage().getScaledInstance(160, 50, Image.SCALE_SMOOTH)));
         flameLeft.setIcon(new ImageIcon(new ImageIcon("pics/FlamesLeft.jpg").getImage().getScaledInstance(160, 50, Image.SCALE_SMOOTH)));
@@ -143,7 +146,7 @@ public class Frame extends JFrame implements ActionListener {
         infoPanel.setLayout(new GridLayout(1, 5, 50, 50));
         infoPanel.setPreferredSize(new Dimension(0, 60));
         infoPanel.setBackground(backgroundColor);
-        
+
         timerLabel.setHorizontalAlignment(SwingConstants.CENTER);
         timerLabel.setBackground(Color.WHITE);
         timerLabel.setOpaque(true);
@@ -154,16 +157,16 @@ public class Frame extends JFrame implements ActionListener {
         infoPanel.add(timerLabel);
         infoPanel.add(statsButton);
         infoPanel.add(spaces.get(8));
-        
+
         southPanel.add(spaces.get(9), BorderLayout.NORTH);
         southPanel.add(infoPanel, BorderLayout.CENTER);
         southPanel.add(spaces.get(10), BorderLayout.SOUTH);
-        
+
         superPanel.add(logoPanel, BorderLayout.NORTH);
         superPanel.add(spaces.get(1), BorderLayout.WEST);
         superPanel.add(southPanel, BorderLayout.SOUTH);
         superPanel.add(mainPanel, BorderLayout.CENTER);
-        
+
         eastInfoPanel.setBackground(backgroundColor);
         eastInfoPanel.setLayout(new GridLayout(1, 2, 0, 10));
         eastInfoPanel.setBorder(BorderFactory.createEmptyBorder(8, 25, 5, 25));
@@ -172,17 +175,16 @@ public class Frame extends JFrame implements ActionListener {
         usernameLabel.setHorizontalAlignment(SwingConstants.CENTER);
         eastInfoPanel.add(changeUserButton);
         eastInfoPanel.add(usernameLabel);
-        
+
         eastPanel.add(eastInfoPanel, BorderLayout.NORTH);
         eastPanel.add(spaces.get(11), BorderLayout.WEST);
         eastPanel.add(spaces.get(5), BorderLayout.EAST);
         spaces.get(6).setPreferredSize(new Dimension(0, 20));
         eastPanel.add(spaces.get(6), BorderLayout.SOUTH);
-        
-                
+
         add(superPanel, BorderLayout.CENTER);
         add(eastPanel, BorderLayout.EAST);
-        setPreferredSize(new Dimension(840, 300));
+        setPreferredSize(new Dimension(830, 300));
         pack();
         setLocationRelativeTo(null);
         setResizable(false);
@@ -193,7 +195,7 @@ public class Frame extends JFrame implements ActionListener {
     public void setKeyListener(KeyListener kl) {
         centerPanel.addKeyListener(kl);
     }
-    
+
     public void setActionListeners(ActionListener al) {
         exitButton.addActionListener(al);
         statsButton.addActionListener(al);
@@ -233,7 +235,7 @@ public class Frame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == timer) {
             duration = duration.plusMillis(10);
-            timerLabel.setText(String.format("%.2f", (duration.toMillis()*1.0)/1000));
+            timerLabel.setText(String.format("%.2f", (duration.toMillis() * 1.0) / 1000));
         }
     }
 
@@ -250,23 +252,42 @@ public class Frame extends JFrame implements ActionListener {
         }
         revalidate();
     }
-    
-    public void showStats(List<String> stats){
+
+    public void showStats(List<String> stats) {
         JOptionPane.showMessageDialog(null, stats.get(0) + stats.get(1) + stats.get(2));
         centerPanel.requestFocus();
     }
-    
-    public String changeUser(){
+
+    public String changeUser() {
+        String input;
+        while (true) {
+            input = JOptionPane.showInputDialog("Enter initials");
+            if (input == null) {
+                revalidate();
+                centerPanel.requestFocus();
+                return usernameLabel.getText();
+            }
+            if (input.length() == 3) {
+                input = input.toUpperCase();
+                usernameLabel.setText("Player: " + input);
+                revalidate();
+                centerPanel.requestFocus();
+                return input;
+            } else {
+                JOptionPane.showMessageDialog(null, "Initials must be 3 letters");
+            }
+        }
+    }
+
+    public String setUser() {
         String input = "";
-        while(true){
+        while (true) {
             input = JOptionPane.showInputDialog("Enter initials");
             if (input == null) {
                 System.exit(0);
-            }
-            else if(input.length() == 3){
+            } else if (input.length() == 3) {
                 break;
-            }
-            else {
+            } else {
                 JOptionPane.showMessageDialog(null, "Initials must be 3 letters");
             }
         }
@@ -276,8 +297,8 @@ public class Frame extends JFrame implements ActionListener {
         centerPanel.requestFocus();
         return input;
     }
-    
-    public void showVerdict(String verdict){
+
+    public void showVerdict(String verdict) {
         String temp = duration.toString();
         temp = temp.substring(2, temp.length() - 1);
         JOptionPane.showMessageDialog(null, temp + verdict);
