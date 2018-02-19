@@ -254,7 +254,7 @@ public class Frame extends JFrame implements ActionListener {
     }
 
     public void showStats(List<String> stats) {
-        JOptionPane.showMessageDialog(null, stats.get(0) + stats.get(1) + stats.get(2));
+        JOptionPane.showMessageDialog(null, stats.get(0) + stats.get(1) + stats.get(2) + stats.get(3));
         centerPanel.requestFocus();
     }
 

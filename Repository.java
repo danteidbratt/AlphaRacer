@@ -61,27 +61,36 @@ public class Repository {
         return verdict;
     }
 
-    public List<String> getStats() {
+    public List<String> getStats(String initials) {
         List<String> stats = new ArrayList<>();
-        String query1 = "select avg(seconds) as average from score";
-        String query2 = "select count(ID) as games from score";
-        String query3 = "select initials as initials, count(ID) as total from score group by initials order by total desc";
+        String query1 = "select min(seconds) as personalBest from score where initials like ? limit 1";
+        String query2 = "select avg(seconds) as average from score where initials like ? limit 1";
+        String query3 = "select avg(seconds) as average from score";
+        String query4 = "select count(ID) as games from score where initials like ?";
         try (Connection con = DriverManager.getConnection(log.getCode(), log.getName(), log.getPass());
              PreparedStatement stmt1 = con.prepareStatement(query1);
              PreparedStatement stmt2 = con.prepareStatement(query2);
              PreparedStatement stmt3 = con.prepareStatement(query3);
+             PreparedStatement stmt4 = con.prepareStatement(query4);
         ){
+            stmt1.setString(1, initials);
             ResultSet rs1 = stmt1.executeQuery();
             while (rs1.next()) {
-                stats.add("Avarage Score:   " + String.format("%.2f",rs1.getDouble("average")));
+                stats.add("\nPersonal Best:   " + String.format("%.2f", rs1.getDouble("personalBest")));
             }
+            stmt2.setString(1, initials);
             ResultSet rs2 = stmt2.executeQuery();
             while (rs2.next()) {
-                stats.add("\nGames played:   " + rs2.getInt("games"));
+                stats.add("\nMy Average:   " + String.format("%.2f", rs2.getDouble("average")));
             }
             ResultSet rs3 = stmt3.executeQuery();
             while (rs3.next()) {
-                stats.add("\nMost devoted player:   " + rs3.getString("initials"));
+                stats.add("\nGlobal Avarage:   " + String.format("%.2f",rs3.getDouble("average")));
+            }
+            stmt4.setString(1, initials);
+            ResultSet rs4 = stmt4.executeQuery();
+            while (rs4.next()) {
+                stats.add("\nGames Played:   " + rs4.getInt("games"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
